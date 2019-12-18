@@ -9,6 +9,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

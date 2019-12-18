@@ -11,6 +11,7 @@
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
