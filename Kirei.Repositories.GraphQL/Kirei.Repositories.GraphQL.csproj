@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>Kirei.Repositories.GraphQL</PackageId>
+    <Version>2.1.0</Version>
+    <Authors>Scott Bamford</Authors>
+    <Company>Scott Bamford</Company>
+    <Product>Kirei.Repositories</Product>
+    <Description>Class that help create GraphQL apis using GraphQL dotnet and Kirei.Repositories.</Description>
+    <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GraphQL" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kirei.Repositories.Abstractions\Kirei.Repositories.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
