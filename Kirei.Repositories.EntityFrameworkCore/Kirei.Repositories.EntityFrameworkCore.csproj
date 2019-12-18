@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -6,11 +6,12 @@
     <Description>Implementation of Kirei.Repositories.Abstractions that provides the ability to use DbContext from Microsoft.EntityFrameworkCore as a database backend for respositories.</Description>
     <Authors>Scott Bamford</Authors>
     <Product>Kirei.Repositories</Product>
-    <Version>2.0.0</Version>
-    <PackageLicenseUrl>https://github.com/scottbamford/Kirei.Repositories/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>2.1.0</Version>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
