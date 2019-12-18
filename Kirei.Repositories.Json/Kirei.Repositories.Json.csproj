@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>Kirei.Repositories</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Scott Bamford</Authors>
+    <Product>Kirei.Repositories</Product>
+    <Description>Implementation of Kirei.Repositories.Abstractions that provides the ability to use JSON files as a database backend for respositories.</Description>
+    <Version>2.0.0</Version>
+    <PackageLicenseUrl>https://github.com/scottbamford/Kirei.Repositories/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kirei.Repositories.Abstractions\Kirei.Repositories.Abstractions.csproj" />
+    <ProjectReference Include="..\Kirei.Repositories\Kirei.Repositories.csproj" />
+  </ItemGroup>
+
+</Project>
