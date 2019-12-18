@@ -12,28 +12,11 @@ namespace Kirei.Repositories
     /// <summary>
     /// Implementation of IRepository that uses EntityFraeworkCore via DbContext for all data operations.
     /// </summary>
-    /// <typeparam name="DbContext"></typeparam>
-    /// <typeparam name="DbModel"></typeparam>
-    /// <typeparam name="Model"></typeparam>
-    public class DbContextRepository<Model, DbContext, DbModel> : DbContextRepository<Model, Guid, DbContext, DbModel>, IRepository<Model>
-        where DbContext : Microsoft.EntityFrameworkCore.DbContext
-        where DbModel : class, new()
-        where Model : class, new()
-    {
-        public DbContextRepository(
-            DbContext context,
-            IEnumerable<IRepositoryEvents<Model>> events,
-            IModelConverter modelConverter,
-            IExpressionConverter expressionConverter
-            )
-            : base(context, events, modelConverter, expressionConverter)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Implementation of IRepository that uses EntityFraeworkCore via DbContext for all data operations.
-    /// </summary>
+    /// <remarks>
+    /// If <typeparamref name="Model"/> and <typeparamref name="DbModel"/> are differnt types, the repository will take care of converting the types
+    /// for you based on static property mappings using IModelConveter.  If <typeparamref name="Model"/> and <typeparamref name="DbModel"/> are the same
+    /// type then the Repository will "pass through" the results without attempting any conversion.
+    /// </remarks>
     /// <typeparam name="DbContext"></typeparam>
     /// <typeparam name="DbModel"></typeparam>
     /// <typeparam name="Model"></typeparam>
@@ -49,8 +32,8 @@ namespace Kirei.Repositories
         private readonly IExpressionConverter _expressionConverter;
 
         public DbContextRepository(
-            DbContext context, 
-            IEnumerable<IRepositoryEvents<Model>> events, 
+            DbContext context,
+            IEnumerable<IRepositoryEvents<Model>> events,
             IModelConverter modelConverter,
             IExpressionConverter expressionConverter
             )
@@ -90,7 +73,12 @@ namespace Kirei.Repositories
         public virtual Model Find(PrimaryKey id)
         {
             var dbModel = _context.Find<DbModel>(id);
-            var model = _modelConverter.CopyProperties(dbModel, new Model());
+            Model model;
+            if (typeof(Model) == typeof(DbModel)) {
+                model = (Model)(object)dbModel;
+            } else {
+                model = _modelConverter.CopyProperties(dbModel, new Model());
+            }
 
             foreach (var eventx in _events) {
                 eventx.Found(model);
@@ -102,7 +90,12 @@ namespace Kirei.Repositories
         public virtual async Task<Model> FindAsync(PrimaryKey id)
         {
             var dbModel = await _context.FindAsync<DbModel>(id);
-            var model = _modelConverter.CopyProperties(dbModel, new Model());
+            Model model;
+            if (typeof(Model) == typeof(DbModel)) {
+                model = (Model)(object)dbModel;
+            } else {
+                model = _modelConverter.CopyProperties(dbModel, new Model());
+            }
 
             foreach (var eventx in _events) {
                 eventx.Found(model);
@@ -255,7 +248,12 @@ namespace Kirei.Repositories
             _context.SaveChanges();
 
             if (_events.Any()) {
-                var model = _modelConverter.CopyProperties(dbModel, new Model());
+                Model model;
+                if (typeof(Model) == typeof(DbModel)) {
+                    model = (Model)(object)dbModel;
+                } else {
+                    model = _modelConverter.CopyProperties(dbModel, new Model());
+                }
 
                 foreach (var eventx in _events) {
                     eventx.Removed(model);
@@ -272,7 +270,12 @@ namespace Kirei.Repositories
             await _context.SaveChangesAsync();
 
             if (_events.Any()) {
-                var model = _modelConverter.CopyProperties(dbModel, new Model());
+                Model model;
+                if (typeof(Model) == typeof(DbModel)) {
+                    model = (Model)(object)dbModel;
+                } else {
+                    model = _modelConverter.CopyProperties(dbModel, new Model());
+                }
 
                 foreach (var eventx in _events) {
                     eventx.Removed(model);
@@ -340,7 +343,12 @@ namespace Kirei.Repositories
             // Convert back to the model format.
             var ret = dbResults.Select(dbModel =>
             {
-                var model = _modelConverter.CopyProperties(dbModel, new Model());
+                Model model;
+                if (typeof(Model) == typeof(DbModel)) {
+                    model = (Model)(object)dbModel;
+                } else {
+                    model = _modelConverter.CopyProperties(dbModel, new Model());
+                }
 
                 foreach (var eventx in _events) {
                     eventx.Found(model);
@@ -383,7 +391,7 @@ namespace Kirei.Repositories
 
             // Find the data set to work with.
             IQueryable<DbModel> dbSet = _context.Set<DbModel>();
-            
+
             // Apply the where clause.
             if (dbWhere != null) {
                 dbSet = dbSet.Where(dbWhere);
@@ -405,12 +413,18 @@ namespace Kirei.Repositories
             }
 
             // Read the data.
-            var dbResults = dbSet.ToAsyncEnumerable();
+            //var dbResults = dbSet.ToAsyncEnumerable();
+            var dbResults = dbSet.ToList();
 
             // Convert back to the model format.
-            var ret = await dbResults.Select(dbModel =>
+            var ret = /*await*/ dbResults.Select(dbModel =>
             {
-                var model = _modelConverter.CopyProperties(dbModel, new Model());
+                Model model;
+                if (typeof(Model) == typeof(DbModel)) {
+                    model = (Model)(object)dbModel;
+                } else {
+                    model = _modelConverter.CopyProperties(dbModel, new Model());
+                }
 
                 foreach (var eventx in _events) {
                     eventx.Found(model);
@@ -419,7 +433,7 @@ namespace Kirei.Repositories
                 return model;
             }).ToList();
 
-            return ret;
+            return await Task.FromResult(ret);
         }
 
 
@@ -430,7 +444,7 @@ namespace Kirei.Repositories
             if (where != null) {
                 dbWhere = _expressionConverter.Convert<Func<Model, bool>, Func<DbModel, bool>>(where);
             }
-            
+
             // Find the data set to work with.
             IQueryable<DbModel> dbSet = _context.Set<DbModel>();
 
