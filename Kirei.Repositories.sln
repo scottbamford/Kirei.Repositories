@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.Json", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.EntityFrameworkCore", "Kirei.Repositories.EntityFrameworkCore\Kirei.Repositories.EntityFrameworkCore.csproj", "{DB6D8835-5ACB-4D6C-82B9-5041D4DECC3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kirei.Repositories.GraphQL", "Kirei.Repositories.GraphQL\Kirei.Repositories.GraphQL.csproj", "{D82A5AE8-1F02-454F-A87C-D715D1B89D0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.GraphQL", "Kirei.Repositories.GraphQL\Kirei.Repositories.GraphQL.csproj", "{D82A5AE8-1F02-454F-A87C-D715D1B89D0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kirei.Repositories.AspNetCore.RestApi", "Kirei.Repositories.AspNetCore.RestApi\Kirei.Repositories.AspNetCore.RestApi.csproj", "{8DD365CF-FC2C-47AC-B832-9B13B99D8D86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.AspNetCore.RestApi", "Kirei.Repositories.AspNetCore.RestApi\Kirei.Repositories.AspNetCore.RestApi.csproj", "{8DD365CF-FC2C-47AC-B832-9B13B99D8D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

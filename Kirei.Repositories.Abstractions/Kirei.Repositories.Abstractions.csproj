@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -8,7 +8,7 @@
     <Company>Scott Bamford</Company>
     <Product>Kirei.Repositories</Product>
     <Description>IRepository&lt;T&gt; based interface to abstract data access using a repository pattern.</Description>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>

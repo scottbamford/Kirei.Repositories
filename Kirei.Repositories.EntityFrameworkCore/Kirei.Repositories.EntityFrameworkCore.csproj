@@ -6,7 +6,7 @@
     <Description>Implementation of Kirei.Repositories.Abstractions that provides the ability to use DbContext from Microsoft.EntityFrameworkCore as a database backend for respositories.</Description>
     <Authors>Scott Bamford</Authors>
     <Product>Kirei.Repositories</Product>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
