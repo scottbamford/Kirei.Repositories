@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;
-using Newtonsoft.Json;
 
 namespace Kirei.Repositories
 {
@@ -58,7 +58,7 @@ namespace Kirei.Repositories
 
         public Task<bool> SaveAsync()
         {
-            var json = JsonConvert.SerializeObject(_data);
+            var json = JsonSerializer.Serialize(_data);
 
             string modelName = typeof(T).Name;
 
@@ -95,7 +95,7 @@ namespace Kirei.Repositories
             using (var stream = fileInfo.CreateReadStream()) {
                 using (var reader = new StreamReader(stream)) {
                     var json = await reader.ReadToEndAsync();
-                    var ret = JsonConvert.DeserializeObject<T[]>(json);
+                    var ret = JsonSerializer.Deserialize<T[]>(json);
                     return ret;
                 }
             }
