@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Kirei.Repositories.GraphQL
 {
     /// <summary>
     /// Extension methods for working with repositories more easily with GraphQL dotnet.
     /// </summary>
-    public static class RepositoryGraphQLExtensions
+    public static class RepositoryGraphQLMutationExtensions
     {
         /// <summary>
         /// Mutation to create a model in the repository and save it after applying changes.
@@ -69,7 +70,7 @@ namespace Kirei.Repositories.GraphQL
         /// <param name="context"></param>
         /// <param name="dbContext"></param>
         /// <returns></returns>
-        public static async Task<Model> RemoveAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id)
+        public static async Task<Model> RemoveMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id)
             where Model : class
         {
             // Remove the item.

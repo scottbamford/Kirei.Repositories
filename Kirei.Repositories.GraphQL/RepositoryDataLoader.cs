@@ -40,12 +40,17 @@ namespace Kirei.Repositories.GraphQL
             public int? Take { get; set; }
         }
 
+        protected string GetDefaultLoaderKey<Model>(string method)
+        {
+            return $"_{typeof(Model).FullName}_{method}_DataLoader";
+        }
+
         /// <summary>
         /// Find one from the repository.  This is the equivalent of the Repository's Find() method.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<Model> UseDataLoaderForFind<Model, PrimaryKey>(string loaderKey, Expression<Func<Model, bool>> where)
+        public Task<Model> QueueFind<Model>(Expression<Func<Model, bool>> where, string loaderKey = null)
             where Model : class
         {
             var thisRequest = new DataLoaderRequest<Model>
@@ -59,9 +64,9 @@ namespace Kirei.Repositories.GraphQL
             // Get or add a batch loader with the dataLoaderName.
             // The loader will group the calls to the repository together and split the results back out again to return them.
             var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model>, Model>(
-                loaderKey,
+                loaderKey ?? GetDefaultLoaderKey<Model>("Find"),
                 async requests => {
-                    var data = await LoadData<Model, PrimaryKey>(requests);
+                    var data = await LoadData(requests);
                     var ret = data.ToDictionary(
                         item => item.Key,
                         item => item.Value.FirstOrDefault()
@@ -80,7 +85,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<IEnumerable<Model>> UseDataLoaderForFindAll<Model, PrimaryKey>(string loaderKey, Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null)
+        public Task<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class
         {
             var thisRequest = new DataLoaderRequest<Model>
@@ -94,10 +99,10 @@ namespace Kirei.Repositories.GraphQL
             // Get or add a batch loader with the dataLoaderName.
             // The loader will group the calls to the repository together and split the results back out again to return them.
             var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model>, IEnumerable<Model>>(
-                loaderKey,
+                loaderKey ?? GetDefaultLoaderKey<Model>("FindAll"),
                 async requests =>
                 {
-                    var ret = await LoadData<Model, PrimaryKey>(requests);
+                    var ret = await LoadData(requests);
                     return ret;
                 }
                 );
@@ -113,11 +118,11 @@ namespace Kirei.Repositories.GraphQL
         /// <typeparam name="Model"></typeparam>
         /// <param name="requests"></param>
         /// <returns></returns>
-        protected async Task<Dictionary<DataLoaderRequest<Model>, IEnumerable<Model>>> LoadData<Model, PrimaryKey>(IEnumerable<DataLoaderRequest<Model>> requests)
+        protected async Task<Dictionary<DataLoaderRequest<Model>, IEnumerable<Model>>> LoadData<Model>(IEnumerable<DataLoaderRequest<Model>> requests)
             where Model : class
         {
             using (var scope = _serviceProvider.CreateScope()) {
-                var repository = scope.ServiceProvider.GetService<IRepository<Model, PrimaryKey>>();
+                var repository = scope.ServiceProvider.GetService<IRepository<Model>>();
 
                 // If we only have one request to handle, we can do everyting on the server without any fancy processing, so handle that case now.
                 if (requests.Count() == 1) {

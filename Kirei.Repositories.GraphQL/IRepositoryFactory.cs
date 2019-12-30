@@ -32,6 +32,13 @@ namespace Kirei.Repositories.GraphQL
         /// <returns></returns>
         Task<Result> UseScopedRepositoryAsync<Result, Model>(Func<IRepository<Model>, Task<Result>> action)
             where Model : class;
+
+        /// <summary>
+        /// Create a scoped repository and data laoader and perform action on it returning its result.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Task<Result> UseScopedRepositoryDataLoaderAsync<Result>(Func<IRepositoryDataLoader, Task<Result>> action);
         #endregion
 
         #region Sync methods

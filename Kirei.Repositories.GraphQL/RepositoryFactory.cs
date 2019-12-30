@@ -35,7 +35,7 @@ namespace Kirei.Repositories.GraphQL
             where Model : class
         {
             using (var scope = _serviceProvider.CreateScope()) {
-                var repository = scope.ServiceProvider.GetService<IRepository<Model, PrimaryKey>>();
+                var repository = scope.ServiceProvider.GetRequiredService<IRepository<Model, PrimaryKey>>();
 
                 return await action(repository);
             }
@@ -50,9 +50,24 @@ namespace Kirei.Repositories.GraphQL
             where Model : class
         {
             using (var scope = _serviceProvider.CreateScope()) {
-                var repository = scope.ServiceProvider.GetService<IRepository<Model>>();
+                var repository = scope.ServiceProvider.GetRequiredService<IRepository<Model>>();
 
                 return await action(repository);
+            }
+        }
+
+
+        /// <summary>
+        /// Create a scoped repository and data loader and perform action on it returning its result.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<Result> UseScopedRepositoryDataLoaderAsync<Result>(Func<IRepositoryDataLoader, Task<Result>> action)
+        {
+            using (var scope = _serviceProvider.CreateScope()) {
+                var dataLoader = scope.ServiceProvider.GetRequiredService<IRepositoryDataLoader>();
+
+                return action(dataLoader);
             }
         }
         #endregion
@@ -67,7 +82,7 @@ namespace Kirei.Repositories.GraphQL
             where Model : class
         {
             using (var scope = _serviceProvider.CreateScope()) {
-                var repository = scope.ServiceProvider.GetService<IRepository<Model, PrimaryKey>>();
+                var repository = scope.ServiceProvider.GetRequiredService<IRepository<Model, PrimaryKey>>();
 
                 return action(repository);
             }
@@ -82,7 +97,7 @@ namespace Kirei.Repositories.GraphQL
             where Model : class
         {
             using (var scope = _serviceProvider.CreateScope()) {
-                var repository = scope.ServiceProvider.GetService<IRepository<Model>>();
+                var repository = scope.ServiceProvider.GetRequiredService<IRepository<Model>>();
 
                 return action(repository);
             }
