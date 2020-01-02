@@ -72,7 +72,7 @@ namespace Kirei.Repositories.GraphQL
                 // Treat changes as an object and use reflection to build a list of changes.
                 changesDictionary = changes.GetType().GetProperties()
                     .Where(item => item.CanRead)
-                    .ToDictionary(item => item.Name, item => item.GetValue(item));
+                    .ToDictionary(item => item.Name, item => item.GetValue(changes));
             }
 
             foreach (var change in changesDictionary) {
