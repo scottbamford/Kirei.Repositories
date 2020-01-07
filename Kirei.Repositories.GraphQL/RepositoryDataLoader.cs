@@ -75,7 +75,7 @@ namespace Kirei.Repositories.GraphQL
 
             // Get or add a batch loader with the dataLoaderName.
             // The loader will group the calls to the repository together and split the results back out again to return them.
-            var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model>, Model>(
+            var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model, PrimaryKey>, Model>(
                 loaderKey ?? GetDefaultLoaderKey<Model>("Find"),
                 async requests => {
                     var data = await LoadData(requests);
@@ -121,7 +121,7 @@ namespace Kirei.Repositories.GraphQL
 
             // Get or add a batch loader with the dataLoaderName.
             // The loader will group the calls to the repository together and split the results back out again to return them.
-            var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model>, IEnumerable<Model>>(
+            var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>(
                 loaderKey ?? GetDefaultLoaderKey<Model>("FindAll"),
                 async requests =>
                 {
@@ -141,7 +141,7 @@ namespace Kirei.Repositories.GraphQL
         /// <typeparam name="Model"></typeparam>
         /// <param name="requests"></param>
         /// <returns></returns>
-        protected async Task<Dictionary<DataLoaderRequest<Model>, IEnumerable<Model>>> LoadData<Model, PrimaryKey>(IEnumerable<DataLoaderRequest<Model, PrimaryKey>> requests)
+        protected async Task<Dictionary<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>> LoadData<Model, PrimaryKey>(IEnumerable<DataLoaderRequest<Model, PrimaryKey>> requests)
             where Model : class
         {
             using (var scope = _serviceProvider.CreateScope()) {
