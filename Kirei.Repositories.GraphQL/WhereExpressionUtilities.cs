@@ -54,6 +54,53 @@ namespace Kirei.Repositories.GraphQL
         }
 
         /// <summary>
+        /// Combine multiple expressions using And.  Any null expressions are skipped.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expressions"></param>
+        /// <returns></returns>
+        public static Expression<Func<T, bool>> CombineAnd<T>(params Expression<Func<T, bool>>[] expressions)
+        {
+            Expression<Func<T, bool>> ret = null;
+            foreach (var expression in expressions) {
+                if (expression == null) {
+                    continue;
+                }
+
+                if (ret == null) {
+                    ret = expression;
+                } else {
+                    ret = WhereExpressionUtilities.And(ret, expression);
+                }
+            }
+            return ret;
+        }
+
+
+        /// <summary>
+        /// Combine multiple expressions using Or.  Any null expressions are skipped.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expressions"></param>
+        /// <returns></returns>
+        public static Expression<Func<T, bool>> CombineOr<T>(params Expression<Func<T, bool>>[] expressions)
+        {
+            Expression<Func<T, bool>> ret = null;
+            foreach (var expression in expressions) {
+                if (expression == null) {
+                    continue;
+                }
+
+                if (ret == null) {
+                    ret = expression;
+                } else {
+                    ret = WhereExpressionUtilities.Or(ret, expression);
+                }
+            }
+            return ret;
+        }
+
+        /// <summary>
         /// ExpressionVisitor that will rewrite parameters as we combine them.
         /// </summary>
         public class ParameterRebinder : ExpressionVisitor
