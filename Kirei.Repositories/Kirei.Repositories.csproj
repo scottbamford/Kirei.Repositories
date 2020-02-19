@@ -6,7 +6,7 @@
     <Authors>Scott Bamford</Authors>
     <Company>Scott Bamford</Company>
     <Description>Implementation of Kirei.Repositories.Abstractions including base classes and an in-memory database.</Description>
-    <Version>2.3.0</Version>
+    <Version>2.3.1</Version>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
