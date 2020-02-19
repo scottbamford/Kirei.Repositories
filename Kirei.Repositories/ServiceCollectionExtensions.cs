@@ -92,7 +92,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var repositoryType = map(request);
             if (repositoryType != null) {
-                AddAllRepositoryInterfaces(services, typeof(IRepository<Model>), repositoryType);
+                AddAllRepositoryInterfaces(services, typeof(Model), repositoryType);
             }
 
             return services;
@@ -192,14 +192,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="repositoryType"></param>
         private static void AddAllRepositoryInterfaces(IServiceCollection services, Type modelType, Type repositoryType)
         {
-            // Add the normal resolution.
-            services.AddScoped(typeof(IRepository<>).MakeGenericType(modelType), repositoryType);
-
-            // If the Key property can be found on the model, also register the repository to be resolved with the PrimaryKey type specified too
-            // as some code will want to be built generically around the PrimaryKey type and will want to use this version directly.
+            // Add resolution based on the full IRepository<Model, PrimaryKey> interface.
             var keyProperty = GetPrimaryKeyPropertyFromModel(modelType);
             if (keyProperty != null) {
                 services.AddScoped(typeof(IRepository<,>).MakeGenericType(modelType, keyProperty.PropertyType), repositoryType);
+            }
+
+            // If this repository also supports the IRepository<Model> interface because it has a Guid Primary Key then add a resolution for that as well.
+            if (keyProperty.PropertyType == typeof(Guid)) {
+                services.AddScoped(typeof(IRepository<>).MakeGenericType(modelType), repositoryType);
             }
         }
 

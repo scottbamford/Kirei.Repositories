@@ -16,7 +16,6 @@ namespace Kirei.Repositories.GraphQL
     /// </summary>
     public interface IRepositoryDataLoader
     {
-
         /// <summary>
         /// Find one from the repository.  This is the equivalent of the Repository's Find() method.
         /// </summary>
@@ -31,6 +30,23 @@ namespace Kirei.Repositories.GraphQL
         /// <param name="context"></param>
         /// <returns></returns>
         Task<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+            where Model : class;
+
+        
+        /// <summary>
+        /// Find one from the repository.  This is the equivalent of the Repository's Find() method.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Task<Model> QueueFind<Model, PrimaryKey>(Expression<Func<Model, bool>> where, string loaderKey = null)
+            where Model : class;
+
+        /// <summary>
+        /// Find multiple from the repository.  This is the equivalent of the Repository's FindAll() method.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class;
     }
 }
