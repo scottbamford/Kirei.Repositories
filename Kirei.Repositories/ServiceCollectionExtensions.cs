@@ -66,7 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where Model : class, new()
             where RepositoryEvents : class, IRepositoryEvents<Model>
         {
-            services.AddSingleton<IRepositoryEvents<Model>, RepositoryEvents>();
+            services.AddScoped<IRepositoryEvents<Model>, RepositoryEvents>();
 
             return services;
         }
@@ -154,7 +154,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var eventInterfaces = modelType.GetInterfaces().Where(it => it.IsGenericType && it.GetGenericTypeDefinition() == typeof(IRepositoryEvents<>));
                 if (eventInterfaces.Any()) {
                     foreach (var eventInterface in eventInterfaces) {
-                        services.AddSingleton(eventInterface, modelType);
+                        services.AddScoped(eventInterface, modelType);
                     }
                     continue;
                 }
