@@ -39,18 +39,30 @@ namespace Kirei.Repositories.GraphQL
             }
 
             // Try and parse it
-            var parseMethod = targetType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+            //
+
+            // If we are wrapped in Nullable<> then get the underlying type to use for parsing.
+            var parseType = targetType;
+            if (targetType.FullName.StartsWith("System.Nullable")) {
+                parseType = Nullable.GetUnderlyingType(targetType);
+            }
+
+            // Find the simpliest parse method we can work with.
+            var parseMethod = parseType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
                 .Where(item => item.Name == "Parse")
                 .Where(item => item.GetParameters().Length >= 1 && item.GetParameters().First().ParameterType == typeof(string))
                 .OrderBy(item => item.GetParameters().Length)
                 .FirstOrDefault();
 
-            var sValue = value.ToString();
-            try {
-                var parsedValue = parseMethod.Invoke(null, new object[] { sValue });
-                return parsedValue;
-            } catch (Exception) {
-                // Ignore, it just lets us know the Parse failed.
+            // If we found a suitable parse method, try and use it.
+            if (parseMethod != null) {
+                var sValue = value.ToString();
+                try {
+                    var parsedValue = parseMethod.Invoke(null, new object[] { sValue });
+                    return parsedValue;
+                } catch (Exception) {
+                    // Ignore, it just lets us know the Parse failed.
+                }
             }
 
             // Give up and let the calling code fail on assignment.

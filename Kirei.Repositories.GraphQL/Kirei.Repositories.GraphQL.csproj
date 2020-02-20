@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Kirei.Repositories.GraphQL</PackageId>
-    <Version>3.0.8</Version>
+    <Version>3.0.9</Version>
     <Authors>Scott Bamford</Authors>
     <Company>Scott Bamford</Company>
     <Product>Kirei.Repositories</Product>
