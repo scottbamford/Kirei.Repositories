@@ -21,7 +21,7 @@ namespace Kirei.Repositories.GraphQL
         /// Perform a mutation or query using a repository.
         /// </summary>
         /// <returns></returns>
-        public static FieldBuilder<TSourceType, TReturnType> ResolveWithRepositoryAsync<TSourceType, TReturnType>(this FieldBuilder<TSourceType, TReturnType> builder, IRepositoryFactory factory, Func<ResolveFieldContext<TSourceType>, IRepository<TReturnType>, Task<TReturnType>> resolveAction)
+        public static FieldBuilder<TSourceType, TReturnType> ResolveWithRepositoryAsync<TSourceType, TReturnType>(this FieldBuilder<TSourceType, TReturnType> builder, IRepositoryFactory factory, Func<IResolveFieldContext<TSourceType>, IRepository<TReturnType>, Task<TReturnType>> resolveAction)
             where TReturnType : class
         {
             return builder
@@ -33,7 +33,7 @@ namespace Kirei.Repositories.GraphQL
         /// Perform a mutation or query using a repository.
         /// </summary>
         /// <returns></returns>
-        public static FieldBuilder<TSourceType, TReturnType> ResolveWithRepository<TSourceType, TReturnType>(this FieldBuilder<TSourceType, TReturnType> builder, IRepositoryFactory factory, Func<ResolveFieldContext<TSourceType>, IRepository<TReturnType>, TReturnType> resolveAction)
+        public static FieldBuilder<TSourceType, TReturnType> ResolveWithRepository<TSourceType, TReturnType>(this FieldBuilder<TSourceType, TReturnType> builder, IRepositoryFactory factory, Func<IResolveFieldContext<TSourceType>, IRepository<TReturnType>, TReturnType> resolveAction)
             where TReturnType : class
         {
             return builder
@@ -44,7 +44,7 @@ namespace Kirei.Repositories.GraphQL
         /// Perform a query using a repository and a repository data laoder.
         /// </summary>
         /// <returns></returns>
-        public static FieldBuilder<TSourceType, TReturnType> ResolveWithRepositoryDataLoaderAsync<TSourceType, TReturnType>(this FieldBuilder<TSourceType, TReturnType> builder, IRepositoryFactory factory, Func<ResolveFieldContext<TSourceType>, IRepositoryDataLoader, Task<TReturnType>> resolveAction)
+        public static FieldBuilder<TSourceType, TReturnType> ResolveWithRepositoryDataLoaderAsync<TSourceType, TReturnType>(this FieldBuilder<TSourceType, TReturnType> builder, IRepositoryFactory factory, Func<IResolveFieldContext<TSourceType>, IRepositoryDataLoader, Task<TReturnType>> resolveAction)
             where TReturnType : class
         {
             return builder
