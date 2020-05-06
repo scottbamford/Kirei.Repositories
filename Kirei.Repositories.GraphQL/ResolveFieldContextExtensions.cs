@@ -27,7 +27,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static CaseInsenstiveDynamicDictionary GetArgumentAsDynamicDictionary<TSource>(this ResolveFieldContext<TSource> context, string name)
+        public static CaseInsenstiveDynamicDictionary GetArgumentAsDynamicDictionary<TSource>(this IResolveFieldContext<TSource> context, string name)
         {
             var dictionary = (IDictionary<string, object>)context.GetArgument<object>(name);
             var ret = new CaseInsenstiveDynamicDictionary(dictionary);
@@ -39,7 +39,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static dynamic GetArgumentAsDynamic<TSource>(this ResolveFieldContext<TSource> context, string name)
+        public static dynamic GetArgumentAsDynamic<TSource>(this IResolveFieldContext<TSource> context, string name)
         {
             return GetArgumentAsDynamicDictionary<TSource>(context, name).AsDynamic();
         }
