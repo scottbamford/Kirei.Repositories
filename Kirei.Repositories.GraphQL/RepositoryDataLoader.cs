@@ -141,7 +141,7 @@ namespace Kirei.Repositories.GraphQL
         /// <typeparam name="Model"></typeparam>
         /// <param name="requests"></param>
         /// <returns></returns>
-        protected async Task<Dictionary<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>> LoadData<Model, PrimaryKey>(IEnumerable<DataLoaderRequest<Model, PrimaryKey>> requests)
+        protected virtual async Task<Dictionary<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>> LoadData<Model, PrimaryKey>(IEnumerable<DataLoaderRequest<Model, PrimaryKey>> requests)
             where Model : class
         {
             using (var scope = _serviceProvider.CreateScope()) {
