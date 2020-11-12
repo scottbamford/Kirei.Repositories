@@ -51,7 +51,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<Model> QueueFind<Model>(Expression<Func<Model, bool>> where, string loaderKey = null)
+        public IDataLoaderResult<Model> QueueFind<Model>(Expression<Func<Model, bool>> where, string loaderKey = null)
             where Model : class
         {
             return QueueFind<Model, Guid>(where, loaderKey);
@@ -62,7 +62,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<Model> QueueFind<Model, PrimaryKey>(Expression<Func<Model, bool>> where, string loaderKey = null)
+        public IDataLoaderResult<Model> QueueFind<Model, PrimaryKey>(Expression<Func<Model, bool>> where, string loaderKey = null)
             where Model : class
         {
             var thisRequest = new DataLoaderRequest<Model, PrimaryKey>
@@ -97,7 +97,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        public IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class
         {
             return QueueFindAll<Model, Guid>(where, orderBy, skip, take, loaderKey);
@@ -108,7 +108,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        public IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class
         {
             var thisRequest = new DataLoaderRequest<Model, PrimaryKey>

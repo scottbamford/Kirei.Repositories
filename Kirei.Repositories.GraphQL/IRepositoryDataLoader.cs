@@ -21,7 +21,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<Model> QueueFind<Model>(Expression<Func<Model, bool>> where, string loaderKey = null)
+        IDataLoaderResult<Model> QueueFind<Model>(Expression<Func<Model, bool>> where, string loaderKey = null)
             where Model : class;
 
         /// <summary>
@@ -29,16 +29,16 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class;
 
-        
+
         /// <summary>
         /// Find one from the repository.  This is the equivalent of the Repository's Find() method.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<Model> QueueFind<Model, PrimaryKey>(Expression<Func<Model, bool>> where, string loaderKey = null)
+        IDataLoaderResult<Model> QueueFind<Model, PrimaryKey>(Expression<Func<Model, bool>> where, string loaderKey = null)
             where Model : class;
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class;
     }
 }
