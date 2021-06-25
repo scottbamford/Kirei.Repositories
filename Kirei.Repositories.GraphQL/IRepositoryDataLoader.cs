@@ -29,7 +29,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, bool orderByDescending = false, Expression<Func<Model, object>> thenBy = null, bool thenByDescending = false, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class;
 
 
@@ -46,7 +46,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, bool orderByDescending = false, Expression<Func<Model, object>> thenBy = null, bool thenByDescending = false, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class;
     }
 }

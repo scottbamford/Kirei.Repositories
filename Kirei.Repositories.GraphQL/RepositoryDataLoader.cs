@@ -36,6 +36,9 @@ namespace Kirei.Repositories.GraphQL
         {
             public Expression<Func<Model, bool>> Where { get; set; }
             public Expression<Func<Model, object>> OrderBy { get; set; }
+            public bool OrderByDescending { get; set; }
+            public Expression<Func<Model, object>> ThenBy { get; set; }
+            public bool ThenByDescending { get; set; }
             public int Skip { get; set; }
             public int? Take { get; set; }
         }
@@ -69,6 +72,9 @@ namespace Kirei.Repositories.GraphQL
             {
                 Where = where,
                 OrderBy = null,
+                OrderByDescending = false,
+                ThenBy = null,
+                ThenByDescending = false,
                 Skip = 0,
                 Take = 1
             };
@@ -97,10 +103,10 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        public IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, bool orderByDescending = false, Expression<Func<Model, object>> thenBy = null, bool thenByDescending = false, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class
         {
-            return QueueFindAll<Model, Guid>(where, orderBy, skip, take, loaderKey);
+            return QueueFindAll<Model, Guid>(where, orderBy, orderByDescending, thenBy, thenByDescending, skip, take, loaderKey);
         }
 
         /// <summary>
@@ -108,13 +114,16 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, int skip = 0, int? take = null, string loaderKey = null)
+        public IDataLoaderResult<IEnumerable<Model>> QueueFindAll<Model, PrimaryKey>(Expression<Func<Model, bool>> where, Expression<Func<Model, object>> orderBy = null, bool orderByDescending = false, Expression<Func<Model, object>> thenBy = null, bool thenByDescending = false, int skip = 0, int? take = null, string loaderKey = null)
             where Model : class
         {
             var thisRequest = new DataLoaderRequest<Model, PrimaryKey>
             {
                 Where = where,
                 OrderBy = orderBy,
+                OrderByDescending = orderByDescending,
+                ThenBy = thenBy,
+                ThenByDescending = thenByDescending,
                 Skip = skip,
                 Take = take
             };
@@ -144,60 +153,79 @@ namespace Kirei.Repositories.GraphQL
         protected virtual async Task<Dictionary<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>> LoadData<Model, PrimaryKey>(IEnumerable<DataLoaderRequest<Model, PrimaryKey>> requests)
             where Model : class
         {
-            using (var scope = _serviceProvider.CreateScope()) {
-                var repository = scope.ServiceProvider.GetService<IRepository<Model, PrimaryKey>>();
+            using var scope = _serviceProvider.CreateScope(); var repository = scope.ServiceProvider.GetService<IRepository<Model, PrimaryKey>>();
 
-                // If we only have one request to handle, we can do everyting on the server without any fancy processing, so handle that case now.
-                if (requests.Count() == 1) {
-                    var request = requests.First();
-                    var singleResults = await repository.FindAllAsync(request.Where, request.OrderBy, request.Skip, request.Take);
-                    return requests.ToDictionary(
-                        item => item,
-                        item => singleResults
-                        );
-                }
-
-                // Otherwise we need to read everything we require and then apply the order, skip, and take after getting the data.
-                //
-
-
-                // Build a combined where clause.
-                Expression<Func<Model, bool>> whereAny = null;
-                foreach (var request in requests) {
-                    if (whereAny == null) {
-                        whereAny = request.Where;
-                    } else {
-                        whereAny = WhereExpressionUtilities.Or(whereAny, request.Where);
-                    }
-                }
-
-                // Read all results for all batched requests.
-                var results = await repository.FindAllAsync(whereAny);
-
-
-                // Split the results back out by their requests, applying the order, skip, and take.
-                var ret = requests.ToDictionary(
+            // If we only have one request to handle, we can do everyting on the server without any fancy processing, so handle that case now.
+            if (requests.Count() == 1) {
+                var request = requests.First();
+                var singleResults = await repository.FindAllAsync(request.Where, request.OrderBy, request.Skip, request.Take);
+                return requests.ToDictionary(
                     item => item,
-                    item =>
-                    {
-                        var batchResult = results.Where(item.Where.Compile());
-                        if (item.OrderBy != null) {
-                            batchResult = batchResult.OrderBy(item.OrderBy.Compile());
-                        }
-
-                        if (item.Skip != 0) {
-                            batchResult = batchResult.Skip(item.Skip);
-                        }
-
-                        if (item.Take.HasValue) {
-                            batchResult = batchResult.Take(item.Take.Value);
-                        }
-
-                        return batchResult;
-                    }
+                    item => singleResults
                     );
-                return ret;
             }
+
+            // Otherwise we need to read everything we require and then apply the order, skip, and take after getting the data.
+            //
+
+
+            // Build a combined where clause.
+            Expression<Func<Model, bool>> whereAny = null;
+            foreach (var request in requests) {
+                if (whereAny == null) {
+                    whereAny = request.Where;
+                } else {
+                    whereAny = WhereExpressionUtilities.Or(whereAny, request.Where);
+                }
+            }
+
+            // Read all results for all batched requests.
+            var results = await repository.FindAllAsync(whereAny);
+
+
+            // Split the results back out by their requests, applying the order, skip, and take.
+            var ret = requests.ToDictionary(
+                item => item,
+                item =>
+                {
+                    var batchResult = results.Where(item.Where.Compile());
+                    if (item.OrderBy != null) {
+                        IOrderedEnumerable<Model> ordered;
+
+                        if (item.OrderByDescending) {
+                            ordered = batchResult
+                                .OrderByDescending(item.OrderBy.Compile());
+                        } else {
+                            ordered = batchResult
+                                .OrderBy(item.OrderBy.Compile());
+                        }
+
+                        if (item.ThenBy != null) {
+                            if (item.ThenByDescending) {
+                                ordered = ordered
+                                    .ThenByDescending(item.OrderBy.Compile());
+                            } else {
+                                ordered = ordered
+                                    .ThenBy(item.OrderBy.Compile());
+                            }
+                            ordered = ordered.ThenBy(item.ThenBy.Compile());
+                        }
+
+                        batchResult = ordered;
+                    }
+
+                    if (item.Skip != 0) {
+                        batchResult = batchResult.Skip(item.Skip);
+                    }
+
+                    if (item.Take.HasValue) {
+                        batchResult = batchResult.Take(item.Take.Value);
+                    }
+
+                    return batchResult;
+                }
+                );
+            return ret;
         }
     }
 }
