@@ -203,12 +203,11 @@ namespace Kirei.Repositories.GraphQL
                         if (item.ThenBy != null) {
                             if (item.ThenByDescending) {
                                 ordered = ordered
-                                    .ThenByDescending(item.OrderBy.Compile());
+                                    .ThenByDescending(item.ThenBy.Compile());
                             } else {
                                 ordered = ordered
-                                    .ThenBy(item.OrderBy.Compile());
+                                    .ThenBy(item.ThenBy.Compile());
                             }
-                            ordered = ordered.ThenBy(item.ThenBy.Compile());
                         }
 
                         batchResult = ordered;
