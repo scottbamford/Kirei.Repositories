@@ -48,7 +48,7 @@ namespace Kirei.Repositories.GraphQL
             return $"_{typeof(Model).FullName}_{method}_DataLoader";
         }
 
-        
+
         /// <summary>
         /// Find one from the repository.  This is the equivalent of the Repository's Find() method.
         /// </summary>
@@ -156,13 +156,60 @@ namespace Kirei.Repositories.GraphQL
             using var scope = _serviceProvider.CreateScope(); var repository = scope.ServiceProvider.GetService<IRepository<Model, PrimaryKey>>();
 
             // If we only have one request to handle, we can do everyting on the server without any fancy processing, so handle that case now.
+            // (Unless we are using a feature not supported by the repository API (e.g. ThenBy), in which case we still treat it as a batch).
             if (requests.Count() == 1) {
                 var request = requests.First();
-                var singleResults = await repository.FindAllAsync(request.Where, request.OrderBy, request.Skip, request.Take);
-                return requests.ToDictionary(
-                    item => item,
-                    item => singleResults
-                    );
+
+                bool needCodeSideOrdering = request.ThenBy != null
+                    || request.OrderByDescending;
+
+                if (!needCodeSideOrdering) {
+                    var singleResults = await repository.FindAllAsync(request.Where, request.OrderBy, request.Skip, request.Take);
+                    return requests.ToDictionary(
+                        item => item,
+                        item => singleResults
+                        );
+                } else {
+                    var singleResults = await repository.FindAllAsync(request.Where, request.OrderBy);
+
+                    var batchResult = singleResults;
+                    if (request.OrderBy != null) {
+                        IOrderedEnumerable<Model> ordered;
+
+                        if (request.OrderByDescending) {
+                            ordered = batchResult
+                                .OrderByDescending(request.OrderBy.Compile());
+                        } else {
+                            ordered = batchResult
+                                .OrderBy(request.OrderBy.Compile());
+                        }
+
+                        if (request.ThenBy != null) {
+                            if (request.ThenByDescending) {
+                                ordered = ordered
+                                    .ThenByDescending(request.ThenBy.Compile());
+                            } else {
+                                ordered = ordered
+                                    .ThenBy(request.ThenBy.Compile());
+                            }
+                        }
+
+                        batchResult = ordered;
+                    }
+
+                    if (request.Skip != 0) {
+                        batchResult = batchResult.Skip(request.Skip);
+                    }
+
+                    if (request.Take.HasValue) {
+                        batchResult = batchResult.Take(request.Take.Value);
+                    }
+
+                    return requests.ToDictionary(
+                        item => item,
+                        item => batchResult
+                        );
+                }
             }
 
             // Otherwise we need to read everything we require and then apply the order, skip, and take after getting the data.
