@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Kirei.Repositories.GraphQL</PackageId>
-    <Version>6.0.0</Version>
+    <Version>6.1.0</Version>
     <Authors>Scott Bamford</Authors>
     <Company>Scott Bamford</Company>
     <Product>Kirei.Repositories</Product>
@@ -12,6 +12,9 @@
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReleaseNotes>1. Introduce InputModelDictionary as an alternative API to replace the no-longer working GetArgumentAsDynamic() extension.
+2. Add some reflection classes and extensions that can help reduce the amount of manual code written to create GraphTypes from models.
+3. Remove the IRepositoryFactory based APIs which have not been recommended for use for a while.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
