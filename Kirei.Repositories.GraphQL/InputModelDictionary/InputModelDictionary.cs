@@ -30,8 +30,8 @@ namespace Kirei.Repositories.GraphQL
     /// </summary>
     public class InputModelDictionary<TModel> : CaseInsenstiveDynamicDictionary
     {
-        private TModel _model;
-        private IDictionary<string, object> _rawDictionary;
+        private readonly TModel _model;
+        private readonly IDictionary<string, object> _rawDictionary;
 
         public InputModelDictionary(TModel model, IDictionary<string, object> dictionary)
             : base(dictionary)
