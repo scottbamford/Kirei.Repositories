@@ -10,7 +10,7 @@ using GraphQL;
 using GraphQL.Utilities;
 using GraphQL.Types;
 
-namespace Kirei.Repositories.GraphQL.Reflection
+namespace Kirei.Repositories.GraphQL
 {
     /// <summary>
     /// Options that can be passed to the GraphObjectTypeReflectionHelper and classes that use it.

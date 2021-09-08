@@ -9,7 +9,7 @@ using System.Reflection;
 using GraphQL.Utilities;
 using GraphQL.Types;
 
-namespace Kirei.Repositories.GraphQL.Reflection
+namespace Kirei.Repositories.GraphQL
 {
     /// <summary>
     /// Reflecition based autoamtic InputObjectGraphType generation.
