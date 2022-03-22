@@ -16,7 +16,7 @@ namespace Kirei.Repositories.GraphQL
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static async Task<Model> CreateMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, object changes)
+        public static async Task<Model> CreateMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, object changes, Func<Model, bool> validate = null)
             where Model: class
         {
             // Create the model.
@@ -24,6 +24,13 @@ namespace Kirei.Repositories.GraphQL
 
             // Copy across all changed fields.
             ConversionUtilities.ApplyChanges(model, changes);
+
+            // Validate the model before saving to allow any business rules to be applied.
+            if (validate != null) {
+                if (!validate(model)) {
+                    return default;
+                }
+            }
 
             // Save the changes.
             await repository.SaveAsync(model);
@@ -37,10 +44,10 @@ namespace Kirei.Repositories.GraphQL
         /// <param name="context"></param>
         /// <param name="dbContext"></param>
         /// <returns></returns>
-        public static async Task<Model> UpdateMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id, object changes)
+        public static async Task<Model> UpdateMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id, object changes, Func<Model, bool> validate = null)
             where Model : class
         {
-            return await SaveChangesMutationAsync(repository, id, changes);
+            return await SaveChangesMutationAsync(repository, id, changes, validate);
         }
 
         /// <summary>
@@ -49,7 +56,7 @@ namespace Kirei.Repositories.GraphQL
         /// <param name="context"></param>
         /// <param name="dbContext"></param>
         /// <returns></returns>
-        public static async Task<Model> SaveChangesMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id, object changes)
+        public static async Task<Model> SaveChangesMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id, object changes, Func<Model, bool> validate = null)
             where Model : class
         {
             // Find the model.
@@ -57,6 +64,13 @@ namespace Kirei.Repositories.GraphQL
 
             // Copy across all changed fields.
             ConversionUtilities.ApplyChanges(model, changes);
+
+            // Validate the model before saving to allow any business rules to be applied.
+            if (validate != null) {
+                if (!validate(model)) {
+                    return default;
+                }
+            }
 
             // Save the changes.
             await repository.SaveAsync(model);
@@ -70,9 +84,18 @@ namespace Kirei.Repositories.GraphQL
         /// <param name="context"></param>
         /// <param name="dbContext"></param>
         /// <returns></returns>
-        public static async Task<Model> RemoveMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id)
+        public static async Task<Model> RemoveMutationAsync<Model, PrimaryKey>(this IRepository<Model, PrimaryKey> repository, PrimaryKey id, Func<Model, bool> validate = null)
             where Model : class
         {
+            // Validate the model before saving to allow any business rules to be applied.
+            if (validate != null) {
+                var model = await repository.FindAsync(id);
+
+                if (!validate(model)) {
+                    return default;
+                }
+            }
+
             // Remove the item.
             await repository.RemoveAsync(id);
 
