@@ -106,21 +106,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="theNamespace"></param>
         /// <param name="map"></param>
         /// <returns></returns>
-        [Obsolete("This method will be removed in a future release.  Please use AddRepositoryForAssembly passing the namespace.")]
-        public static IServiceCollection AddRepositoriesForAssemblyNamespace(this IServiceCollection services, Assembly assembly, string theNamespace, Func<ModelRepositoryMapRequest, Type> map)
-        {
-            return AddRepositoriesForAssembly(services, assembly, theNamespace, map);
-
-        }
-
-        /// <summary>
-        /// Add repositories for each model class in <paramref name="assembly"/> under <paramref name="theNamespace"/> using <paramref name="map"/> and register any IRepositoryEvents&lt;&gt; from <paramref name="assembly"/>.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="assembly"></param>
-        /// <param name="theNamespace"></param>
-        /// <param name="map"></param>
-        /// <returns></returns>
         public static IServiceCollection AddRepositoriesForAssembly(this IServiceCollection services, Assembly assembly, Func<ModelRepositoryMapRequest, Type> map)
         {
             return AddRepositoriesForAssembly(services, assembly, inNamespace: null, map);
@@ -196,11 +181,11 @@ namespace Microsoft.Extensions.DependencyInjection
             var keyProperty = GetPrimaryKeyPropertyFromModel(modelType);
             if (keyProperty != null) {
                 services.AddScoped(typeof(IRepository<,>).MakeGenericType(modelType, keyProperty.PropertyType), repositoryType);
-            }
 
-            // If this repository also supports the IRepository<Model> interface because it has a Guid Primary Key then add a resolution for that as well.
-            if (keyProperty.PropertyType == typeof(Guid)) {
-                services.AddScoped(typeof(IRepository<>).MakeGenericType(modelType), repositoryType);
+                // If this repository also supports the IRepository<Model> interface because it has a Guid Primary Key then add a resolution for that as well.
+                if (keyProperty.PropertyType == typeof(Guid)) {
+                    services.AddScoped(typeof(IRepository<>).MakeGenericType(modelType), repositoryType);
+                }
             }
         }
 

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>2.2.0</Version>
+    <Version>8.0.0</Version>
     <Authors>Scott Bamford</Authors>
     <Product>Kirei.Repositories</Product>
     <Description>AspNetCore support for easy addition of REST API controllers that use Kirei.Repositries for all data operations.</Description>
@@ -9,6 +9,7 @@
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />

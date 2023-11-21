@@ -7,12 +7,13 @@
     <Company>Scott Bamford</Company>
     <Product>Kirei.Repositories</Product>
     <Description>IRepository&lt;T&gt; based interface to abstract data access using a repository pattern.</Description>
-    <Version>2.2.0</Version>
+    <Version>8.0.0</Version>
     <PackageLicenseUrl>
     </PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
 </Project>

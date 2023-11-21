@@ -83,7 +83,7 @@ namespace Kirei.Repositories
             {
                 // Re-perform any member-binding
                 var expr = Visit(node.Expression);
-                if (expr.Type != node.Type) {
+                if (expr != null && expr.Type != node.Type) {
                     var newMember = expr.Type.GetMember(node.Member.Name)
                                                .Single();
                     return Expression.MakeMemberAccess(expr, newMember);

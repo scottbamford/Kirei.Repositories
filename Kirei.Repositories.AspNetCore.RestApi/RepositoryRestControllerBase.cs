@@ -30,9 +30,9 @@ namespace Kirei.Repositories.AspNetCore.RestApi
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<Model> Get()
+        public async Task<IEnumerable<Model>> Get()
         {
-            return _repository.FindAll();
+            return await _repository.FindAllAsync();
         }
 
         /// <summary>
@@ -41,9 +41,9 @@ namespace Kirei.Repositories.AspNetCore.RestApi
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public Model Get(Guid id)
+        public async Task<Model> Get(Guid id)
         {
-            return _repository.Find(id);
+            return await _repository.FindAsync(id);
         }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace Kirei.Repositories.AspNetCore.RestApi
         /// </summary>
         /// <param name="value"></param>
         [HttpPost]
-        public void Post([FromBody] Model value)
+        public async Task Post([FromBody] Model value)
         {
-            _repository.Save(value);
+            await _repository.SaveAsync(value);
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace Kirei.Repositories.AspNetCore.RestApi
         /// <param name="id"></param>
         /// <param name="value"></param>
         [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] Model value)
+        public async Task Put(Guid id, [FromBody] Model value)
         {
-            _repository.Save(value);
+            await _repository.SaveAsync(value);
         }
 
         /// <summary>
@@ -72,9 +72,9 @@ namespace Kirei.Repositories.AspNetCore.RestApi
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
-            _repository.Remove(id);
+            await _repository.RemoveAsync(id);
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace Kirei.Repositories.AspNetCore.RestApi
         /// </summary>
         /// <returns></returns>
         [HttpGet("[action]")]
-        public Model Defaults()
+        public async Task<Model> Defaults()
         {
-            return _repository.Create(Guid.NewGuid());
+            return await _repository.CreateAsync(Guid.NewGuid());
         }
     }
 }

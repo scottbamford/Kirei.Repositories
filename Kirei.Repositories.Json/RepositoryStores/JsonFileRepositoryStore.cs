@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Kirei.Repositories
 {
@@ -63,6 +63,10 @@ namespace Kirei.Repositories
             string modelName = typeof(T).Name;
 
             var fileInfo = GetLocations(modelName).First();
+            if (String.IsNullOrEmpty(fileInfo?.PhysicalPath)) {
+                throw new Exception("Unable to find a suitable location to save the data");
+            }
+
             File.WriteAllText(fileInfo.PhysicalPath, json);
 
             return Task.FromResult(true);

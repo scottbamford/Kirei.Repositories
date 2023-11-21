@@ -57,15 +57,9 @@ namespace Kirei.Repositories
         protected virtual Model FindDbModelInDataById(PrimaryKey id)
         {
             var primaryKeyProperty = GetPrimaryKeyPropertyFromModel();
-            var dbModel = _store.Data.FirstOrDefault(item => primaryKeyProperty.GetValue(item).Equals(id));
+            var dbModel = _store.Data.FirstOrDefault(item => primaryKeyProperty?.GetValue(item)?.Equals(id) ?? false);
             return dbModel;
         }
-
-        public virtual Model Create(PrimaryKey id = default(PrimaryKey))
-        {
-            return CreateAsync(id).Result;
-        }
-
         public virtual Task<Model> CreateAsync(PrimaryKey id = default(PrimaryKey))
         {
             var model = new Model();
@@ -77,11 +71,6 @@ namespace Kirei.Repositories
             }
 
             return Task.FromResult(model);
-        }
-
-        public virtual Model Find(PrimaryKey id)
-        {
-            return FindAsync(id).Result;
         }
 
         public virtual Task<Model> FindAsync(PrimaryKey id)
@@ -170,11 +159,6 @@ namespace Kirei.Repositories
             return keyProperty;
         }
 
-        public bool Save(Model model)
-        {
-            return SaveAsync(model).Result;
-        }
-
         public async Task<bool> SaveAsync(Model model)
         {
             foreach (var eventx in _events) {
@@ -208,11 +192,6 @@ namespace Kirei.Repositories
             return true;
         }
 
-        public virtual bool Remove(PrimaryKey id)
-        {
-            return RemoveAsync(id).Result;
-        }
-
         public virtual async Task<bool> RemoveAsync(PrimaryKey id)
         {
             var dbModel = FindDbModelInDataById(id);
@@ -228,27 +207,6 @@ namespace Kirei.Repositories
             }
 
             return true;
-        }
-
-        public Model Find(Expression<Func<Model, bool>> where = null)
-        {
-            var ret = FindAll(where, take: 1);
-            return ret.FirstOrDefault();
-        }
-
-        public Model Find<TKey>(Expression<Func<Model, bool>> where = null, Expression<Func<Model, TKey>> orderBy = null)
-        {
-            var ret = FindAll(where, orderBy, take: 1);
-            return ret.FirstOrDefault();
-        }
-        public IEnumerable<Model> FindAll(Expression<Func<Model, bool>> where = null, int skip = 0, int? take = null)
-        {
-            return FindAll<object>(where, orderBy: null, skip: skip, take: take);
-        }
-
-        public virtual IEnumerable<Model> FindAll<TKey>(Expression<Func<Model, bool>> where = null, Expression<Func<Model, TKey>> orderBy = null, int skip = 0, int? take = null)
-        {
-            return FindAllAsync<TKey>(where, orderBy, skip, take).Result;
         }
 
         public async Task<Model> FindAsync(Expression<Func<Model, bool>> where = null)
@@ -309,13 +267,6 @@ namespace Kirei.Repositories
 
             return Task.FromResult<IEnumerable<Model>>(ret);
         }
-
-
-        public virtual int Count(Expression<Func<Model, bool>> where = null, int skip = 0, int? take = null)
-        {
-            return CountAsync(where, skip, take).Result;
-        }
-
 
         public virtual Task<int> CountAsync(Expression<Func<Model, bool>> where = null, int skip = 0, int? take = null)
         {

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.181
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.Abstractions", "Kirei.Repositories.Abstractions\Kirei.Repositories.Abstractions.csproj", "{36546720-50CA-4DE2-AA80-D8894955452D}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.EntityFr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.GraphQL", "Kirei.Repositories.GraphQL\Kirei.Repositories.GraphQL.csproj", "{D82A5AE8-1F02-454F-A87C-D715D1B89D0B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.AspNetCore.RestApi", "Kirei.Repositories.AspNetCore.RestApi\Kirei.Repositories.AspNetCore.RestApi.csproj", "{8DD365CF-FC2C-47AC-B832-9B13B99D8D86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kirei.Repositories.AspNetCore.RestApi", "Kirei.Repositories.AspNetCore.RestApi\Kirei.Repositories.AspNetCore.RestApi.csproj", "{75B01C49-46FB-42B0-A968-9E773768A49A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{D82A5AE8-1F02-454F-A87C-D715D1B89D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D82A5AE8-1F02-454F-A87C-D715D1B89D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D82A5AE8-1F02-454F-A87C-D715D1B89D0B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DD365CF-FC2C-47AC-B832-9B13B99D8D86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DD365CF-FC2C-47AC-B832-9B13B99D8D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DD365CF-FC2C-47AC-B832-9B13B99D8D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DD365CF-FC2C-47AC-B832-9B13B99D8D86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75B01C49-46FB-42B0-A968-9E773768A49A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B01C49-46FB-42B0-A968-9E773768A49A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B01C49-46FB-42B0-A968-9E773768A49A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B01C49-46FB-42B0-A968-9E773768A49A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

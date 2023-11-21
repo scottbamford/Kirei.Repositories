@@ -44,19 +44,6 @@ namespace Kirei.Repositories
             _expressionConverter = expressionConverter;
         }
 
-        public virtual Model Create(PrimaryKey id = default(PrimaryKey))
-        {
-            var model = new Model();
-            SetPrimaryKey(model, id);
-            SetNullStringsToEmpty(model);
-
-            foreach (var eventx in _events) {
-                eventx.Created(model);
-            }
-
-            return model;
-        }
-
         public virtual Task<Model> CreateAsync(PrimaryKey id = default(PrimaryKey))
         {
             var model = new Model();
@@ -68,23 +55,6 @@ namespace Kirei.Repositories
             }
 
             return Task.FromResult(model);
-        }
-
-        public virtual Model Find(PrimaryKey id)
-        {
-            var dbModel = _context.Find<DbModel>(id);
-            Model model;
-            if (typeof(Model) == typeof(DbModel)) {
-                model = (Model)(object)dbModel;
-            } else {
-                model = _modelConverter.CopyProperties(dbModel, new Model());
-            }
-
-            foreach (var eventx in _events) {
-                eventx.Found(model);
-            }
-
-            return model;
         }
 
         public virtual async Task<Model> FindAsync(PrimaryKey id)
@@ -175,39 +145,6 @@ namespace Kirei.Repositories
             }
         }
 
-        public bool Save(Model model)
-        {
-            foreach (var eventx in _events) {
-                eventx.Saving(model);
-            }
-
-            // Find the item in the database.
-            var id = GetPrimaryKey(model);
-            bool isCreate = false;
-            var dbModel = _context.Find<DbModel>(id);
-            if (dbModel == null) {
-                isCreate = true;
-                dbModel = new DbModel();
-            }
-
-            _modelConverter.CopyProperties(model, dbModel);
-
-            if (isCreate) {
-                _context.Add(dbModel);
-            } else {
-                _context.Update(dbModel);
-            }
-
-            _context.SaveChanges();
-
-            foreach (var eventx in _events) {
-                eventx.Saved(model);
-            }
-
-            // Do nothing.
-            return true;
-        }
-
         public async Task<bool> SaveAsync(Model model)
         {
             foreach (var eventx in _events) {
@@ -241,31 +178,13 @@ namespace Kirei.Repositories
             return true;
         }
 
-        public virtual bool Remove(PrimaryKey id)
-        {
-            var dbModel = _context.Find<DbModel>(id);
-            _context.Remove(dbModel);
-            _context.SaveChanges();
-
-            if (_events.Any()) {
-                Model model;
-                if (typeof(Model) == typeof(DbModel)) {
-                    model = (Model)(object)dbModel;
-                } else {
-                    model = _modelConverter.CopyProperties(dbModel, new Model());
-                }
-
-                foreach (var eventx in _events) {
-                    eventx.Removed(model);
-                }
-            }
-
-            return true;
-        }
-
         public virtual async Task<bool> RemoveAsync(PrimaryKey id)
         {
             var dbModel = await _context.FindAsync<DbModel>(id);
+            if (dbModel == null) {
+                return false;
+            }
+
             _context.Remove(dbModel);
             await _context.SaveChangesAsync();
 
@@ -283,81 +202,6 @@ namespace Kirei.Repositories
             }
 
             return true;
-        }
-
-        public Model Find(Expression<Func<Model, bool>> where = null)
-        {
-            var ret = FindAll(where, take: 1);
-            return ret.FirstOrDefault();
-        }
-
-        public Model Find<TKey>(Expression<Func<Model, bool>> where = null, Expression<Func<Model, TKey>> orderBy = null)
-        {
-            var ret = FindAll(where, orderBy, take: 1);
-            return ret.FirstOrDefault();
-        }
-        public IEnumerable<Model> FindAll(Expression<Func<Model, bool>> where = null, int skip = 0, int? take = null)
-        {
-            return FindAll<object>(where, orderBy: null, skip: skip, take: take);
-        }
-
-        public virtual IEnumerable<Model> FindAll<TKey>(Expression<Func<Model, bool>> where = null, Expression<Func<Model, TKey>> orderBy = null, int skip = 0, int? take = null)
-        {
-            // Convert the expressions so we can use them with the database.
-            Expression<Func<DbModel, bool>> dbWhere = null;
-            if (where != null) {
-                dbWhere = _expressionConverter.Convert<Func<Model, bool>, Func<DbModel, bool>>(where);
-            }
-
-            Expression<Func<DbModel, TKey>> dbOrderBy = null;
-            if (orderBy != null) {
-                dbOrderBy = _expressionConverter.Convert<Func<Model, TKey>, Func<DbModel, TKey>>(orderBy);
-            }
-
-            // Find the data set to work with.
-            IQueryable<DbModel> dbSet = _context.Set<DbModel>();
-
-            // Apply the where clause.
-            if (dbWhere != null) {
-                dbSet = dbSet.Where(dbWhere);
-            }
-
-            // Apply order by clause.
-            if (dbOrderBy != null) {
-                dbSet = dbSet.OrderBy(dbOrderBy);
-            }
-
-            // Apply skip
-            if (skip > 0) {
-                dbSet = dbSet.Skip(skip);
-            }
-
-            // Take only the number of results requested.
-            if (take.HasValue) {
-                dbSet = dbSet.Take(take.Value);
-            }
-
-            // Read the data.
-            var dbResults = dbSet.AsEnumerable();
-
-            // Convert back to the model format.
-            var ret = dbResults.Select(dbModel =>
-            {
-                Model model;
-                if (typeof(Model) == typeof(DbModel)) {
-                    model = (Model)(object)dbModel;
-                } else {
-                    model = _modelConverter.CopyProperties(dbModel, new Model());
-                }
-
-                foreach (var eventx in _events) {
-                    eventx.Found(model);
-                }
-
-                return model;
-            }).ToList();
-
-            return ret;
         }
 
         public async Task<Model> FindAsync(Expression<Func<Model, bool>> where = null)
@@ -435,40 +279,6 @@ namespace Kirei.Repositories
 
             return await Task.FromResult(ret);
         }
-
-
-        public virtual int Count(Expression<Func<Model, bool>> where = null, int skip = 0, int? take = null)
-        {
-            // Convert the expressions so we can use them with the database.
-            Expression<Func<DbModel, bool>> dbWhere = null;
-            if (where != null) {
-                dbWhere = _expressionConverter.Convert<Func<Model, bool>, Func<DbModel, bool>>(where);
-            }
-
-            // Find the data set to work with.
-            IQueryable<DbModel> dbSet = _context.Set<DbModel>();
-
-            // Apply the where clause.
-            if (dbWhere != null) {
-                dbSet = dbSet.Where(dbWhere);
-            }
-
-            // Apply skip
-            if (skip > 0) {
-                dbSet = dbSet.Skip(skip);
-            }
-
-            // Take only the number of results requested.
-            if (take.HasValue) {
-                dbSet = dbSet.Take(take.Value);
-            }
-
-            // Count the records.
-            var ret = dbSet.Count();
-
-            return ret;
-        }
-
 
         public virtual Task<int> CountAsync(Expression<Func<Model, bool>> where = null, int skip = 0, int? take = null)
         {

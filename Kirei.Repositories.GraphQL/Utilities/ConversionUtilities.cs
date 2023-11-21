@@ -43,12 +43,12 @@ namespace Kirei.Repositories.GraphQL
 
             // If we are wrapped in Nullable<> then get the underlying type to use for parsing.
             var parseType = targetType;
-            if (targetType.FullName.StartsWith("System.Nullable")) {
+            if ((targetType.FullName ?? "").StartsWith("System.Nullable")) {
                 parseType = Nullable.GetUnderlyingType(targetType);
             }
 
             // Find the simpliest parse method we can work with.
-            var parseMethod = parseType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+            var parseMethod = parseType?.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
                 .Where(item => item.Name == "Parse")
                 .Where(item => item.GetParameters().Length >= 1 && item.GetParameters().First().ParameterType == typeof(string))
                 .OrderBy(item => item.GetParameters().Length)

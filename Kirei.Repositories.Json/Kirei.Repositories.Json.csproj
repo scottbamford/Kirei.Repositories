@@ -6,16 +6,18 @@
     <Authors>Scott Bamford</Authors>
     <Product>Kirei.Repositories</Product>
     <Description>Implementation of Kirei.Repositories.Abstractions that provides the ability to use JSON files as a database backend for respositories.</Description>
-    <Version>3.0.0</Version>
+    <Version>8.0.0</Version>
     <PackageLicenseUrl>
     </PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/scottbamford/Kirei.Repositories</PackageProjectUrl>
     <RepositoryUrl>https://github.com/scottbamford/Kirei.Repositories</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>

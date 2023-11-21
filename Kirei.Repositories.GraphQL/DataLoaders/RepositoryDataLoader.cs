@@ -81,7 +81,7 @@ namespace Kirei.Repositories.GraphQL
 
             // Get or add a batch loader with the dataLoaderName.
             // The loader will group the calls to the repository together and split the results back out again to return them.
-            var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model, PrimaryKey>, Model>(
+            var loader = _accessor.Context?.GetOrAddBatchLoader<DataLoaderRequest<Model, PrimaryKey>, Model>(
                 loaderKey ?? GetDefaultLoaderKey<Model>("Find"),
                 async requests => {
                     var data = await LoadData(requests);
@@ -95,7 +95,7 @@ namespace Kirei.Repositories.GraphQL
 
             // Add this request to the pending requests to fetch
             // The task will complete once the the data loader returns with the batched results
-            return loader.LoadAsync(thisRequest);
+            return loader?.LoadAsync(thisRequest);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Kirei.Repositories.GraphQL
 
             // Get or add a batch loader with the dataLoaderName.
             // The loader will group the calls to the repository together and split the results back out again to return them.
-            var loader = _accessor.Context.GetOrAddBatchLoader<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>(
+            var loader = _accessor.Context?.GetOrAddBatchLoader<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>(
                 loaderKey ?? GetDefaultLoaderKey<Model>("FindAll"),
                 async requests =>
                 {
@@ -141,7 +141,7 @@ namespace Kirei.Repositories.GraphQL
 
             // Add this request to the pending requests to fetch
             // The task will complete once the the data loader returns with the batched results
-            return loader.LoadAsync(thisRequest);
+            return loader?.LoadAsync(thisRequest);
         }
 
         /// <summary>
@@ -153,7 +153,8 @@ namespace Kirei.Repositories.GraphQL
         protected virtual async Task<Dictionary<DataLoaderRequest<Model, PrimaryKey>, IEnumerable<Model>>> LoadData<Model, PrimaryKey>(IEnumerable<DataLoaderRequest<Model, PrimaryKey>> requests)
             where Model : class
         {
-            using var scope = _serviceProvider.CreateScope(); var repository = scope.ServiceProvider.GetService<IRepository<Model, PrimaryKey>>();
+            using var scope = _serviceProvider.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<IRepository<Model, PrimaryKey>>();
 
             // If we only have one request to handle, we can do everyting on the server without any fancy processing, so handle that case now.
             // (Unless we are using a feature not supported by the repository API (e.g. ThenBy), in which case we still treat it as a batch).
